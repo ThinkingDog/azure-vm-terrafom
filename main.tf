@@ -40,6 +40,7 @@ resource "azurerm_network_security_group" "myterraformnsg" {
   name                = "myNetworkSecurityGroup"
   location            = "eastus"
   resource_group_name = azurerm_resource_group.myterraformgroup.name
+  for_each = var.public_ip_allowlist
 
   security_rule {
     name                       = "SSH"
@@ -49,7 +50,7 @@ resource "azurerm_network_security_group" "myterraformnsg" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "22"
-    source_address_prefix      = var.public_ip_allowlist
+    source_address_prefix      = each.key
     destination_address_prefix = "*"
   }
 
