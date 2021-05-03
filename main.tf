@@ -66,6 +66,12 @@ resource "azurerm_network_security_group" "myterraformnsg" {
   }
 }
 
+
+resource "azurerm_subnet_network_security_group_association" "myterraformnetworking" {
+  subnet_id                 = azurerm_subnet.myterraformsubnet.id
+  network_security_group_id = azurerm_network_security_group.myterraformnsg.id
+}
+
 resource "azurerm_network_interface" "myterraformnic" {
   name                      = "myNIC"
   location                  = "eastus"
