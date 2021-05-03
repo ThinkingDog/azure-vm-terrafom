@@ -49,7 +49,7 @@ resource "azurerm_network_security_group" "myterraformnsg" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "22"
-    source_address_prefix      = "*"
+    source_address_prefix      = var.public_ip_allowlist
     destination_address_prefix = "*"
   }
 
@@ -127,7 +127,7 @@ resource "azurerm_virtual_machine" "myterraformvm" {
     disable_password_authentication = true
     ssh_keys {
       path     = "/home/azureuser/.ssh/authorized_keys"
-      key_data = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDz+B7XV58v0+k03zAydNUAowQvYqsTD6ZEcX/ZTYbQVl9uc44j+QkM0G5OeD4vWXGcq5Z73lWzk1cs2xCv39t9lkyPkda/VF9adJpRaEaFGQTWBQQcotTLCPzTTn2B5ZXi67Bl4nH8X/FVkQvYl9y3t5klz3n0OCtDeYYabiIk3COyMXCSkPxoQywxEfNW3D2zn+r8b8VaO//P9uFFE3xTXAYbTDmFkrvnAGp6rfA+WRW0bP4tpBUnNz5ozqsqcFGRDYBMawqJGABDZeAd84gFAmnQXNdto8LXkp9EGNU+mC1yHf07S52+K5nhhBBV41hjk79GcUFnl7wcZ2G06dGMk8onWfpaN7hQC8w+/kT1paZmvMyPiFkLcvS+xhrtmZFmhvIjRM3iKzDJ8zCDsPg5EOYhGxq94XUDe40LgvQdIRpvM6xTNDj1OJsQ1wQe76+nxH6SH6nfjW6g7vRXToxoFL/HgYBHBrs64jv4/+YltHRjQdybRBvtASzsDMhy7qN0wVNp8HyyIczXnJ3nTjHftWer+7VgQkDoCRsKvBzBPsdfvagfQgjDxJqfB2EkOJNp0yluMUE4uBjqCLhSYWZxbrOytuzPrcw0pi4Swh8WaIR75g+a4tH6SREYKvs0J7o+e0WwJLT+O+q/ZK0mZeJseJ+/BBC/0n4PkoQoOWE2Xw== nukdcbear@gmail.com"
+      key_data = var.public_key
     }
   }
 

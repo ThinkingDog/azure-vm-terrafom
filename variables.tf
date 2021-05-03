@@ -13,3 +13,7 @@ variable "client_secret" {
 variable "tenant_id" {
 
 }
+
+variable "public_key" {
+
+}
