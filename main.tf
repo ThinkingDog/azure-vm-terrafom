@@ -40,7 +40,7 @@ resource "azurerm_network_security_group" "myterraformnsg" {
   name                = "myNetworkSecurityGroup"
   location            = "eastus"
   resource_group_name = azurerm_resource_group.myterraformgroup.name
-  for_each = var.public_ip_allowlist
+  for_each = toset( var.public_ip_allowlist )
 
   security_rule {
     name                       = "SSH"
