@@ -25,11 +25,17 @@ resource "azurerm_subnet" "myterraformsubnet" {
   address_prefixes     = ["10.0.2.0/24"]
 }
 
+resource "random_pet" "vm" {
+  length = 2
+}
+
 resource "azurerm_public_ip" "myterraformpublicip" {
   name                = "myPublicIP"
   location            = "eastus"
   resource_group_name = azurerm_resource_group.myterraformgroup.name
-  allocation_method   = "Dynamic"
+  allocation_method   = "Static"
+  sku                 = "Standard"
+  domain_name_label   = random_pet.vm.id
 
   tags = {
     environment = "Terraform Demo"
