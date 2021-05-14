@@ -56,6 +56,7 @@ resource "azurerm_network_security_group" "myterraformnsg" {
     source_port_range          = "*"
     destination_port_range     = "22"
     source_address_prefixes    = var.public_ip_allowlist
+    # source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
 
@@ -71,9 +72,9 @@ resource "azurerm_subnet_network_security_group_association" "myterraformnetwork
 }
 
 resource "azurerm_network_interface" "myterraformnic" {
-  name                      = "myNIC"
-  location                  = "eastus"
-  resource_group_name       = azurerm_resource_group.myterraformgroup.name
+  name                = "myNIC"
+  location            = "eastus"
+  resource_group_name = azurerm_resource_group.myterraformgroup.name
 
   ip_configuration {
     name                          = "myNicConfiguration"
@@ -108,47 +109,42 @@ resource "azurerm_storage_account" "mystorageaccount" {
   }
 }
 
-resource "azurerm_virtual_machine" "myterraformvm" {
-  name                  = "myVM"
+data "template_file" "myterraformvm_startup_script" {
+  template = file("${path.module}/templates/startup_script/install.sh")
+}
+
+resource "azurerm_linux_virtual_machine" "myterraformvm" {
   location              = "eastus"
+  name                  = "myVM"
   resource_group_name   = azurerm_resource_group.myterraformgroup.name
   network_interface_ids = [azurerm_network_interface.myterraformnic.id]
-  vm_size               = "Standard_DS1_v2"
+  size                  = "Standard_DS1_v2"
+  admin_username        = "azureuser"
 
-  storage_os_disk {
-    name              = "myOsDisk"
-    caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = "Premium_LRS"
-  }
-
-  storage_image_reference {
-    publisher = "Canonical"
-    offer     = "UbuntuServer"
-    sku       = "18.04-LTS"
+  source_image_reference {
+    publisher = var.publisher
+    offer     = var.offer
+    sku       = var.sku
     version   = "latest"
   }
 
-  os_profile {
-    computer_name  = "myvm"
-    admin_username = "azureuser"
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
   }
 
-  os_profile_linux_config {
-    disable_password_authentication = true
-    ssh_keys {
-      path     = "/home/azureuser/.ssh/authorized_keys"
-      key_data = var.public_key
-    }
+  admin_ssh_key {
+    username   = "azureuser"
+    public_key = var.public_key
   }
+
+  custom_data = base64encode(data.template_file.myterraformvm_startup_script.rendered)
 
   boot_diagnostics {
-    enabled     = "true"
-    storage_uri = azurerm_storage_account.mystorageaccount.primary_blob_endpoint
+    storage_account_uri = azurerm_storage_account.mystorageaccount.primary_blob_endpoint
   }
 
   tags = {
     environment = "Terraform Demo"
   }
 }
-
