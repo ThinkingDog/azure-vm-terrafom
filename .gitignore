@@ -1,6 +1,11 @@
 #  Local .terraform directories
 **/.terraform/*
 
+*.lock.hcl
+
+# Testing assets with secrets
+**/key_pair*
+
 # .tfstate files
 *.tfstate
 *.tfstate.*
