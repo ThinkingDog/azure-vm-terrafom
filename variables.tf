@@ -1,17 +1,13 @@
-variable "subscription_id" {
-
+variable "publisher" {
+  default = "Canonical"
 }
 
-variable "client_id" {
-
+variable "offer" {
+  default = "UbuntuServer"
 }
 
-variable "client_secret" {
-
-}
-
-variable "tenant_id" {
-
+variable "sku" {
+  default = "18.04-LTS"
 }
 
 variable "public_key" {
